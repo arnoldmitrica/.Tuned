@@ -1,0 +1,6 @@
+framework module Pods_bucovat {
+  umbrella header "Pods-bucovat-umbrella.h"
+
+  export *
+  module * { export * }
+}
