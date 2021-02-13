@@ -61,7 +61,6 @@ class HomeVC: UITableViewController {
         Auth.auth().addStateDidChangeListener{ [weak self] (auth, user) in
             guard let strongSelf = self else { return }
             if Auth.auth().currentUser != nil{
-                print("email \(String(describing: Auth.auth().currentUser?.email))")
                 let name = Auth.auth().currentUser?.displayName
                 strongSelf.sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["2Hi, \(name ?? "You") !", "Add a topic"]))
                 SideMenuManager.default.leftMenuNavigationController = strongSelf.sideMenu
