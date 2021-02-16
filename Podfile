@@ -8,5 +8,6 @@ pod 'Firebase/Firestore'
 pod 'Firebase/Analytics'
 pod 'Firebase/Database'
 pod 'SideMenu'
+pod 'BSImagePicker', '~> 3.1'
 
 end
