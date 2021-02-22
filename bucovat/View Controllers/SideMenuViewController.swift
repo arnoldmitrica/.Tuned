@@ -20,7 +20,7 @@ class SideMenuViewController: UITableViewController {
         if let menuItems = menuItems{
             self.menuItems = menuItems
         }
-        print("Aici sunt in init: \(self.menuItems)")
+        print("menuItems initialized: \(self.menuItems)")
         super.init(nibName: nil, bundle: nil)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: SideMenuViewController.reuseCell)
         

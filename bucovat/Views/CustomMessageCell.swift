@@ -17,7 +17,7 @@ class CustomMessageCell: UITableViewCell{
     
     var messageView: UILabel = {
         var labelView = UILabel()
-        labelView.backgroundColor = .red
+        labelView.backgroundColor = .white
         //labelView.numberOfLines = 3
         //labelView.contentMode = .scaleAspectFit
        labelView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,7 +44,7 @@ class CustomMessageCell: UITableViewCell{
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = .blue
+        contentView.backgroundColor = .systemGray2
         let stack = UIStackView(arrangedSubviews: [coimageView, companyView, adminView])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
@@ -58,7 +58,7 @@ class CustomMessageCell: UITableViewCell{
         stack.heightAnchor.constraint(equalToConstant: 40).isActive = true
         stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10).isActive = true
         stack.bottomAnchor.constraint(equalTo: messageView.topAnchor).isActive = true
-        stack.backgroundColor = .brown
+        stack.backgroundColor = .systemGray
         stack.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         
         messageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10).isActive = true
@@ -67,7 +67,7 @@ class CustomMessageCell: UITableViewCell{
         messageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
         messageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 20).isActive = true
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         if let message = message{

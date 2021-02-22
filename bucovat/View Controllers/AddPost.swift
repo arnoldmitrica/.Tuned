@@ -19,7 +19,8 @@ class AddPost: UIViewController, UITextViewDelegate, UICollectionViewDelegate, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = .systemBackground
+        title = "Add post"
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissview))
         textviewinit()
         imagesviewinit()
@@ -30,6 +31,7 @@ class AddPost: UIViewController, UITextViewDelegate, UICollectionViewDelegate, U
         self.dismiss(animated: true) {
             self.textview.resignFirstResponder()
             print("Dismiss addpost")
+            self.tabBarController?.selectedIndex = 0
         }
     }
     
@@ -50,6 +52,7 @@ class AddPost: UIViewController, UITextViewDelegate, UICollectionViewDelegate, U
     //    textview.snapshotView(afterScreenUpdates: false)
 
         self.view.addSubview(textview)
+        Utilities.styleShadow(textview)
         textview.text = "Enter your post here"
         textview.textColor = .orange
         textview.font = .systemFont(ofSize: 26)
@@ -68,6 +71,8 @@ class AddPost: UIViewController, UITextViewDelegate, UICollectionViewDelegate, U
 
         textview.addKeyboardToolBar(leftButtons: [.camera], rightButtons: [], toolBarDelegate: self)
         //textview.snapshotView(afterScreenUpdates: true)
+        
+        postbutton.button.addTarget(self, action: #selector(sendmessagetofirebase), for: .touchUpInside)
     }
     
 
@@ -172,6 +177,18 @@ class AddPost: UIViewController, UITextViewDelegate, UICollectionViewDelegate, U
             cell.image.image = data
             return cell
         }
+    
+    @objc func sendmessagetofirebase(){
+        guard let message = textview.text, textview.text != "", textview.text != "Enter your post here" else { return }
+        print("message is \(message)")
+        //let email = 
+        Fire.shared.postData(message: message) { [weak self] (result) in
+            if result == true{
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+    }
     
 }
 

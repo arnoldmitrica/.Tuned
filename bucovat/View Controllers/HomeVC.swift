@@ -9,24 +9,6 @@ import UIKit
 import SideMenu
 import Firebase
 
-struct UserCredentials {
-    var name: String?
-    let topic = "Add a topic"
-    let obsv = "Make an observation"
-    var companies:[String]?
-    init(name:String, companies:[String]) {
-        self.name = name
-        self.companies = companies
-    }
-}
-
-struct CellData{
-    var company: String?
-    var coimage: UIImage?
-    var admin: String?
-    var message: String?
-}
-
 class HomeVC: UITableViewController {
     var data = [CellData]()
     var currentemail:String?
@@ -57,24 +39,25 @@ class HomeVC: UITableViewController {
         print("view will appear homevc")
         super.viewWillAppear(animated)
         
+        sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["Hi, You!", "Add a topic"]))
+        SideMenuManager.default.leftMenuNavigationController = sideMenu
         
-        Auth.auth().addStateDidChangeListener{ [weak self] (auth, user) in
-            guard let strongSelf = self else { return }
-            if Auth.auth().currentUser != nil{
-                let name = Auth.auth().currentUser?.displayName
-                strongSelf.sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["2Hi, \(name ?? "You") !", "Add a topic"]))
-                SideMenuManager.default.leftMenuNavigationController = strongSelf.sideMenu
-            }
-            else{
-                print("Auth current user este == nil in viewillappear homevc")
-                strongSelf.sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["2Hi, \("Hi, you!")", "Add a topic"]))
-            }
+//        Auth.auth().addStateDidChangeListener{ [weak self] (auth, user) in
+//            guard let strongSelf = self else { return }
+//            if Auth.auth().currentUser != nil{
+//                let name = Auth.auth().currentUser?.displayName
+//                strongSelf.sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["2Hi, \(name ?? "You") !", "Add a topic"]))
+//                SideMenuManager.default.leftMenuNavigationController = strongSelf.sideMenu
+//            }
+//            else{
+//                print("Auth current user este == nil in viewillappear homevc")
+//                strongSelf.sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["2Hi, \("Hi, you!")", "Add a topic"]))
+//            }
         }
-    }
     override func viewDidAppear(_ animated: Bool) {
         
-        //let navController = UINavigationController(rootViewController: LoginViewController(delegatee: self)) // gives you the top bar
-        //present(navController, animated: true)
+//        let navController = UINavigationController(rootViewController: LoginViewController(delegatee: self)) // gives you the top bar
+//        present(navController, animated: true)
     }
 
     override func viewDidLoad() {

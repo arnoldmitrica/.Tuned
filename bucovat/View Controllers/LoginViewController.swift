@@ -73,10 +73,8 @@ class LoginViewController: UIViewController{
     var itemViews : [UIView] = []
     
     var activeTextField : UITextField? = nil
-    //var scrollView = UIScrollView()
     
     override func viewDidLoad() {
-        //let blockwidth = view.bounds.width/2.3
         super.viewDidLoad()
         
         // call the 'keyboardWillShow' function when the view controller receive the notification that a keyboard is going to be shown
@@ -85,7 +83,6 @@ class LoginViewController: UIViewController{
               // call the 'keyboardWillHide' function when the view controlelr receive notification that keyboard is going to be hidden
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        //view.translatesAutoresizingMaskIntoConstraints = false
         configureViewController()
         //insertitemviews()
         layoutUI()
@@ -95,15 +92,16 @@ class LoginViewController: UIViewController{
     func createUser(name: String, password: String, email: String, phonee: String){
         Auth.auth().createUser(withEmail: email, password: password){ [weak self] authResult, error in
             guard let strongSelf = self else { return }
+
             if let err = error {
                 print("There was an error", err)
             }
             else{
-                let userData = ["name": name, "email ": email, "phone": phonee]
+                //let userData = ["name": name, "email ": email, "phone": phonee]
                 strongSelf.credentials = ["Hi, \(name)", "Search for companies", "Make an observation"]
-                let ref = Database.database().reference()
-                ref.child("users").child(authResult!.user.uid).setValue(userData)
-                print("Aici avem credentials:\(String(describing: strongSelf.credentials))")
+                if let authResultemail = authResult?.user.email{
+                    Fire.shared.newUser(userEmail: authResultemail)
+                }
                 if let _ = strongSelf.credentials{
                     strongSelf.delegate.sendcredentials(menuItems: strongSelf.credentials!)
                 }
@@ -142,8 +140,7 @@ class LoginViewController: UIViewController{
                     }
                     strongSelf.dismissVC()
                 }
-                print("2acesta este serve timestamp \(ServerValue.timestamp())")
-                //ref.child("posts").child("1").setValue(ServerValue.timestamp(), forKey: "timestamp")
+
             }
         }
     }
@@ -177,6 +174,8 @@ class LoginViewController: UIViewController{
     }
     
     func insertitemviews() {
+        
+        // Inserts views on the screen
         let blockwidth = view.bounds.width / 2
         print("blocwidth \(blockwidth)")
         
@@ -187,7 +186,6 @@ class LoginViewController: UIViewController{
             userName.attributedPlaceholder = "Username, only letters and/or digits".toAttributed(alignment: .center)
             
             Utilities.styleTextField(userName)
-            //loginStackedView.addArrangedSubview(userName)
             
             return userName
         }()
@@ -271,37 +269,31 @@ class LoginViewController: UIViewController{
         userName.bottomAnchor.constraint(equalTo: passWord.topAnchor, constant: -10).isActive = true
         userName.widthAnchor.constraint(equalToConstant: blockwidth).isActive = true
         
-//        loginStackedView.addArrangedSubview(passWord)
         passWord.topAnchor.constraint(equalTo: userName.bottomAnchor, constant: 10).isActive = true
         passWord.heightAnchor.constraint(equalToConstant: 55).isActive = true
         passWord.bottomAnchor.constraint(equalTo: passWord2.topAnchor, constant: -10).isActive = true
         passWord.widthAnchor.constraint(equalToConstant: blockwidth).isActive = true
 
-//        loginStackedView.addArrangedSubview(passWord2)
         passWord2.topAnchor.constraint(equalTo: passWord.bottomAnchor, constant: 10).isActive = true
         passWord2.heightAnchor.constraint(equalToConstant: 55).isActive = true
         passWord2.bottomAnchor.constraint(equalTo: email.topAnchor, constant: -10).isActive = true
         passWord2.widthAnchor.constraint(equalToConstant: blockwidth).isActive = true
 //
- //       loginStackedView.addArrangedSubview(email)
         email.topAnchor.constraint(equalTo: passWord2.bottomAnchor, constant: 10).isActive = true
         email.heightAnchor.constraint(equalToConstant: 55).isActive = true
         email.bottomAnchor.constraint(equalTo: phone.topAnchor, constant: -10).isActive = true
         email.widthAnchor.constraint(equalToConstant: blockwidth).isActive = true
 //
-//        loginStackedView.addArrangedSubview(phone)
         phone.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 10).isActive = true
         phone.heightAnchor.constraint(equalToConstant: 55).isActive = true
         phone.bottomAnchor.constraint(equalTo: signUpButton.topAnchor, constant: -10).isActive = true
         phone.widthAnchor.constraint(equalToConstant: blockwidth).isActive = true
 //
-//        loginStackedView.addArrangedSubview(signUpButton)
         signUpButton.topAnchor.constraint(equalTo: phone.bottomAnchor, constant: 10).isActive = true
         signUpButton.heightAnchor.constraint(equalToConstant: 55).isActive = true
         signUpButton.bottomAnchor.constraint(equalTo: loginButton.topAnchor, constant: -10).isActive = true
         signUpButton.widthAnchor.constraint(equalToConstant: blockwidth + 44).isActive = true
 //
- //       loginStackedView.addArrangedSubview(loginButton)
         loginButton.topAnchor.constraint(equalTo: signUpButton.bottomAnchor, constant: 10).isActive = true
         loginButton.heightAnchor.constraint(equalToConstant: 55).isActive = true
         loginButton.widthAnchor.constraint(equalToConstant: blockwidth).isActive = true
@@ -329,7 +321,7 @@ class LoginViewController: UIViewController{
         scrollView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
 
         scrollView.addSubview(blockView)
-        //blockView.backgroundColor = .systemGreen
+
         blockView.translatesAutoresizingMaskIntoConstraints = false
         blockView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
         blockView.widthAnchor.constraint(greaterThanOrEqualToConstant: view.bounds.width/2).isActive = true
