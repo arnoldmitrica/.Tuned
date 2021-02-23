@@ -55,7 +55,7 @@ class Fire {
                 self.myUID = uid
             }
         }
-        print("Fileprivate init + \(self.userEmail)")
+        print("Fileprivate init + \(String(describing: self.userEmail))")
     }
     func postData(message:String, completionHandler: @escaping (Bool) -> ()){
         if let email = self.userEmail {

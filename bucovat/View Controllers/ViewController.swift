@@ -8,6 +8,7 @@
 import UIKit
 import SideMenu
 import Firebase
+import LFTwitterProfile
 
 class ViewController: UITabBarController {
     
@@ -21,7 +22,7 @@ class ViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewControllers = [homevc(), UINavigationController(rootViewController: addpost())]
+        viewControllers = [homevc(), UINavigationController(rootViewController: addpost()), profile()]
         defaults.setValue(false, forKey: "isUserLoggedIn")
     }
     
@@ -58,6 +59,13 @@ class ViewController: UITabBarController {
         let iconImage = UIImage.init(named: "addpost.png")
         post.tabBarItem = UITabBarItem(title: "Add post", image: iconImage, tag: 0)
         return post
+    }
+    
+    func profile() -> TwitterProfileViewController{
+        let profilevc = ProfileViewController()
+        profilevc.title = "Your profile"
+        profilevc.tabBarItem = UITabBarItem(tabBarSystemItem: .topRated, tag: 0)
+        return profilevc
     }
 
 }

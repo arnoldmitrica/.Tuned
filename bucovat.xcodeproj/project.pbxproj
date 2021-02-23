@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		063F8CC6C16EC80F0BEAFC3D /* Pods_bucovat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFBE8AB36F1484AD118A7CDE /* Pods_bucovat.framework */; };
 		F4095118259E1D6C00F51AE8 /* SideMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4095117259E1D6C00F51AE8 /* SideMenuViewController.swift */; };
+		F42CE54E25E509E000DB5F0A /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42CE54D25E509E000DB5F0A /* ProfileViewController.swift */; };
 		F434A1AA259DF99F0025A847 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F434A1A9259DF99F0025A847 /* GoogleService-Info.plist */; };
 		F493151B25DD5D7400314486 /* CellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F493151A25DD5D7400314486 /* CellModel.swift */; };
 		F493151F25DD5E0900314486 /* UserCredentialsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F493151E25DD5E0900314486 /* UserCredentialsModel.swift */; };
@@ -36,6 +37,7 @@
 		D4F8A5891CEB19F69A492371 /* Pods-bucovat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bucovat.debug.xcconfig"; path = "Target Support Files/Pods-bucovat/Pods-bucovat.debug.xcconfig"; sourceTree = "<group>"; };
 		DFBE8AB36F1484AD118A7CDE /* Pods_bucovat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bucovat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4095117259E1D6C00F51AE8 /* SideMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuViewController.swift; sourceTree = "<group>"; };
+		F42CE54D25E509E000DB5F0A /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		F434A1A9259DF99F0025A847 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F493151A25DD5D7400314486 /* CellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellModel.swift; sourceTree = "<group>"; };
 		F493151E25DD5E0900314486 /* UserCredentialsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialsModel.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 			children = (
 				F4B284F5259B68EA005F6565 /* HomeVC.swift */,
 				F4B284D9259A4A32005F6565 /* ViewController.swift */,
+				F42CE54D25E509E000DB5F0A /* ProfileViewController.swift */,
 				F4095117259E1D6C00F51AE8 /* SideMenuViewController.swift */,
 				F4D7A8EF259F8009008C2CDA /* LoginViewController.swift */,
 				F4954CAF25E28818008E7B69 /* InitialViewController.swift */,
@@ -311,6 +314,7 @@
 			files = (
 				F4D7A8F0259F8009008C2CDA /* LoginViewController.swift in Sources */,
 				F4B284DA259A4A32005F6565 /* ViewController.swift in Sources */,
+				F42CE54E25E509E000DB5F0A /* ProfileViewController.swift in Sources */,
 				F4B284F9259B69AC005F6565 /* CustomMessageCell.swift in Sources */,
 				F4954CB025E28818008E7B69 /* InitialViewController.swift in Sources */,
 				F4B284F6259B68EA005F6565 /* HomeVC.swift in Sources */,
