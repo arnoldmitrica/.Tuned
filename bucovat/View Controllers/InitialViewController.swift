@@ -131,13 +131,14 @@ class InitialViewController: UIViewController, UITextFieldDelegate{
         Fire.shared.trySignIn(email, password) { (bool) in
             let defaults = UserDefaults.standard
             if bool == false{
-                self.dismiss(animated: true, completion: nil)
                 defaults.setValue(true, forKey: "isUserLoggedIn")
                 print("something happened)")
+                self.dismiss(animated: true, completion: nil)
             }
             else{
                 defaults.setValue(true, forKey: "isUserLoggedIn")
                 print("All right")
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }

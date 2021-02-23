@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		298F97E9F4B74C6F54EEBB83 /* Pods_bucovat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25572E6EE319EF119842E11 /* Pods_bucovat.framework */; };
+		063F8CC6C16EC80F0BEAFC3D /* Pods_bucovat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFBE8AB36F1484AD118A7CDE /* Pods_bucovat.framework */; };
 		F4095118259E1D6C00F51AE8 /* SideMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4095117259E1D6C00F51AE8 /* SideMenuViewController.swift */; };
 		F434A1AA259DF99F0025A847 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F434A1A9259DF99F0025A847 /* GoogleService-Info.plist */; };
 		F493151B25DD5D7400314486 /* CellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F493151A25DD5D7400314486 /* CellModel.swift */; };
@@ -33,9 +33,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		21CDE18BD0BE3A94D25578D1 /* Pods-bucovat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bucovat.release.xcconfig"; path = "Target Support Files/Pods-bucovat/Pods-bucovat.release.xcconfig"; sourceTree = "<group>"; };
-		913EC927D650025F4707AE14 /* Pods-bucovat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bucovat.debug.xcconfig"; path = "Target Support Files/Pods-bucovat/Pods-bucovat.debug.xcconfig"; sourceTree = "<group>"; };
-		C25572E6EE319EF119842E11 /* Pods_bucovat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bucovat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4F8A5891CEB19F69A492371 /* Pods-bucovat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bucovat.debug.xcconfig"; path = "Target Support Files/Pods-bucovat/Pods-bucovat.debug.xcconfig"; sourceTree = "<group>"; };
+		DFBE8AB36F1484AD118A7CDE /* Pods_bucovat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bucovat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4095117259E1D6C00F51AE8 /* SideMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuViewController.swift; sourceTree = "<group>"; };
 		F434A1A9259DF99F0025A847 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F493151A25DD5D7400314486 /* CellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellModel.swift; sourceTree = "<group>"; };
@@ -60,6 +59,7 @@
 		F4EC060325DBB6C200DECB38 /* KeyboardToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardToolbarButton.swift; sourceTree = "<group>"; };
 		F4EC060625DBCF1300DECB38 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		F4EC065B25DD52DC00DECB38 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		FAE83411D89D7BB7375F324A /* Pods-bucovat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bucovat.release.xcconfig"; path = "Target Support Files/Pods-bucovat/Pods-bucovat.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,17 +67,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				298F97E9F4B74C6F54EEBB83 /* Pods_bucovat.framework in Frameworks */,
+				063F8CC6C16EC80F0BEAFC3D /* Pods_bucovat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		24C0FAF9D0F302FF45BAF9D6 /* Frameworks */ = {
+		4803B9283509611720847326 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C25572E6EE319EF119842E11 /* Pods_bucovat.framework */,
+				DFBE8AB36F1484AD118A7CDE /* Pods_bucovat.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -85,8 +85,8 @@
 		80EFBCA43B47F641B23CC6A0 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				913EC927D650025F4707AE14 /* Pods-bucovat.debug.xcconfig */,
-				21CDE18BD0BE3A94D25578D1 /* Pods-bucovat.release.xcconfig */,
+				D4F8A5891CEB19F69A492371 /* Pods-bucovat.debug.xcconfig */,
+				FAE83411D89D7BB7375F324A /* Pods-bucovat.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -116,7 +116,7 @@
 				F4B284D4259A4A32005F6565 /* bucovat */,
 				F4B284D3259A4A32005F6565 /* Products */,
 				80EFBCA43B47F641B23CC6A0 /* Pods */,
-				24C0FAF9D0F302FF45BAF9D6 /* Frameworks */,
+				4803B9283509611720847326 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -202,11 +202,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F4B284E6259A4A36005F6565 /* Build configuration list for PBXNativeTarget "bucovat" */;
 			buildPhases = (
-				EB274F6E99E28B22C4663BC3 /* [CP] Check Pods Manifest.lock */,
+				509F20D477D40F30331BC315 /* [CP] Check Pods Manifest.lock */,
 				F4B284CE259A4A32005F6565 /* Sources */,
 				F4B284CF259A4A32005F6565 /* Frameworks */,
 				F4B284D0259A4A32005F6565 /* Resources */,
-				69B69F47A860D600227E84F8 /* [CP] Embed Pods Frameworks */,
+				5267BDB2C29F80750214FE05 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -263,24 +263,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		69B69F47A860D600227E84F8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-bucovat/Pods-bucovat-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-bucovat/Pods-bucovat-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bucovat/Pods-bucovat-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EB274F6E99E28B22C4663BC3 /* [CP] Check Pods Manifest.lock */ = {
+		509F20D477D40F30331BC315 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -300,6 +283,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5267BDB2C29F80750214FE05 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-bucovat/Pods-bucovat-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-bucovat/Pods-bucovat-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bucovat/Pods-bucovat-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -463,7 +463,7 @@
 		};
 		F4B284E7259A4A36005F6565 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 913EC927D650025F4707AE14 /* Pods-bucovat.debug.xcconfig */;
+			baseConfigurationReference = D4F8A5891CEB19F69A492371 /* Pods-bucovat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -483,7 +483,7 @@
 		};
 		F4B284E8259A4A36005F6565 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 21CDE18BD0BE3A94D25578D1 /* Pods-bucovat.release.xcconfig */;
+			baseConfigurationReference = FAE83411D89D7BB7375F324A /* Pods-bucovat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

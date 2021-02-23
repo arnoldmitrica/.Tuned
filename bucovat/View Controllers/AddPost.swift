@@ -16,7 +16,6 @@ class AddPost: UIViewController, UITextViewDelegate, UICollectionViewDelegate, U
     private var collectionView: UICollectionView!
     private let identifier: String = "imageidentifier"
     private var selectedImages: [UIImage] = []
-    let vdsr = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
