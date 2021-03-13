@@ -133,7 +133,16 @@ class InitialViewController: UIViewController, UITextFieldDelegate{
             if bool == false{
                 defaults.setValue(true, forKey: "isUserLoggedIn")
                 print("something happened)")
-                self.dismiss(animated: true, completion: nil)
+                
+                //Good bye initial view controller
+                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                    let sceneDelegate = windowScene.delegate as? SceneDelegate
+                  else {
+                    return
+                  }
+                defaults.setValue(true, forKey: "isUserLoggedIn")
+                  sceneDelegate.window?.rootViewController = ViewController()
+                
             }
             else{
                 defaults.setValue(true, forKey: "isUserLoggedIn")
@@ -145,5 +154,9 @@ class InitialViewController: UIViewController, UITextFieldDelegate{
     
     override func viewDidLayoutSubviews() {
         nextButton.heightAnchor.constraint(equalTo: emailTextField.heightAnchor, constant: -30).isActive = true
+    }
+    
+    deinit {
+        print("Initial view controller deinitialized")
     }
 }

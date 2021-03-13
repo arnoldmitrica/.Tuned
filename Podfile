@@ -13,7 +13,7 @@ pod 'MaterialComponents/TextControls+FilledTextAreasTheming'
 pod 'MaterialComponents/TextControls+FilledTextFieldsTheming'
 pod 'MaterialComponents/TextControls+OutlinedTextAreasTheming'
 pod 'MaterialComponents/TextControls+OutlinedTextFieldsTheming'
+pod 'MaterialComponents/Buttons'
 pod 'Gifu'
-pod 'LFTwitterProfile'
 
 end

@@ -31,6 +31,39 @@ class Utilities {
         
     }
     
+    static func styleLabel(_ label: UILabel){
+        let topLine = CALayer()
+        
+        //let bottomLine = CALayer()
+
+        //bottomLine.frame = CGRect(x: -10, y: 0, width: label.frame.size.width + 414, height: 5)
+        
+        //bottomLine.backgroundColor = UIColor.init(red: 155/255, green: 161/255, blue: 171/255, alpha: 1).cgColor
+
+        topLine.frame = CGRect(x: 0, y: label.frame.size.height - 3, width: label.frame.size.width + 384, height: 2)
+        
+        topLine.backgroundColor = UIColor.init(red: 155/255, green: 161/255, blue: 171/255, alpha: 1).cgColor
+        //textfield.addSubview(bottomLine)
+        // Remove border on text field
+        
+        // Add the line to the text field
+        label.layer.addSublayer(topLine)
+        //label.layer.addSublayer(bottomLine)
+    }
+    
+    static func styleView(_ view: UIView){
+        let topLine = CALayer()
+        //let bottomLine = CALayer()
+        topLine.frame = CGRect(x: -10, y: -10, width: view.frame.size.width + 414, height: 7)
+        //bottomLine.frame = CGRect(x: -10, y: -5, width: view.frame.size.width + 414, height: 5)
+        topLine.backgroundColor = UIColor.init(red: 155/255, green: 161/255, blue: 171/255, alpha: 1).cgColor
+        //bottomLine.backgroundColor = UIColor.init(red: 155/255, green: 161/255, blue: 171/255, alpha: 1).cgColor
+        //textfield.addSubview(bottomLine)
+        // Remove border on text field
+        //view.layer.addSublayer(bottomLine)
+        view.layer.addSublayer(topLine)
+    }
+    
     static func styleFilledButton(_ button:UIButton) {
         
         // Filled rounded corner style

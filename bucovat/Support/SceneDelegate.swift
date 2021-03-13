@@ -10,6 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    private let defaults = UserDefaults.standard
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -20,7 +21,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: myWindowScene.coordinateSpace.bounds) // makes it fill up full width
         window?.windowScene = myWindowScene
-        window?.rootViewController = ViewController()
+        let isUserLoggedIn = defaults.bool(forKey: "isUserLoggedIn")
+        
+        if isUserLoggedIn == true {
+            window?.rootViewController = ViewController()
+        }
+        else{
+            window?.rootViewController = InitialViewController()
+        }
         window?.makeKeyAndVisible()
         //configureNavigationBar()
     }

@@ -8,28 +8,41 @@
 import UIKit
 import SideMenu
 import Firebase
+import FirebaseFirestore
 
 class HomeVC: UITableViewController {
     var data = [CellData]()
     var currentemail:String?
     var expandedIndexSet: IndexSet = []
 
+    var seeNewPostButton:AddNewPostButton!
+    var seeNewPostButtonTopAnchor:NSLayoutConstraint!
     var addPostButton:AddNewPostButton!
     var addPostButtonBottomAnchor:NSLayoutConstraint!
     var sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["Hi, you!", "Make an observation", "Add companies"]))
     
     func setamnewsfeed(){
         print("Setting newsfeed called")
-        fetchdata { (datatofetch,email)  in
-            if let datatofetch2 = datatofetch{
+        currentemail = Auth.auth().currentUser?.email
+        Fire.shared.fetchdata(Firestore.firestore().collection("feed/\(currentemail ?? "anonymously")/1"), completionHandler: { (result) in
+            
+            switch result {
+            
+            case .success(let datatofetch):
                 print("Datatofetched not nil")
                 DispatchQueue.main.async {
-                    self.data = datatofetch2
-                    self.currentemail = email
+                    self.data = datatofetch
+                    self.seeNewPostButton.button.setTitle("New posts added", for: .normal)
+                    self.seeNewPostButtonTopAnchor.constant = 20
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        self.seeNewPostButtonTopAnchor.constant = -44
+                    }
                     self.tableView.reloadData()
                 }
+            case .failure(let err):
+                print("Error occured: \(err.localizedDescription)")
             }
-        }
+        })
     }
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -41,23 +54,10 @@ class HomeVC: UITableViewController {
         
         sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["Hi, You!", "Add a topic"]))
         SideMenuManager.default.leftMenuNavigationController = sideMenu
-        
-//        Auth.auth().addStateDidChangeListener{ [weak self] (auth, user) in
-//            guard let strongSelf = self else { return }
-//            if Auth.auth().currentUser != nil{
-//                let name = Auth.auth().currentUser?.displayName
-//                strongSelf.sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["2Hi, \(name ?? "You") !", "Add a topic"]))
-//                SideMenuManager.default.leftMenuNavigationController = strongSelf.sideMenu
-//            }
-//            else{
-//                print("Auth current user este == nil in viewillappear homevc")
-//                strongSelf.sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["2Hi, \("Hi, you!")", "Add a topic"]))
-//            }
+    
         }
     override func viewDidAppear(_ animated: Bool) {
         
-//        let navController = UINavigationController(rootViewController: LoginViewController(delegatee: self)) // gives you the top bar
-//        present(navController, animated: true)
     }
 
     override func viewDidLoad() {
@@ -66,7 +66,7 @@ class HomeVC: UITableViewController {
         SideMenuManager.default.leftMenuNavigationController = sideMenu
         SideMenuManager.default.addScreenEdgePanGesturesToPresent(toView: view, forMenu: .left)
         //SideMenuManager.default.addPanGestureToPresent(toView: view)
-        
+        tableView.separatorStyle = .none
         addpostsetting()
                 
         setamnewsfeed()
@@ -76,14 +76,23 @@ class HomeVC: UITableViewController {
         tableView.refreshControl?.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         
         self.tableView.register(CustomMessageCell.self, forCellReuseIdentifier: "custom")
-
+        
+        seeNewPostButton = AddNewPostButton()
+        view.addSubview(seeNewPostButton)
+        seeNewPostButton.translatesAutoresizingMaskIntoConstraints = false
+//        seeNewPostButtonTopAnchor = view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -44)
+        seeNewPostButtonTopAnchor = seeNewPostButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -10)
+        seeNewPostButtonTopAnchor.isActive = true
+        seeNewPostButton.widthAnchor.constraint(equalToConstant: seeNewPostButton.button.bounds.width).isActive = true
+        seeNewPostButton.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
+        seeNewPostButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        seeNewPostButton.button.addTarget(self, action: #selector(handleRefresh), for: .touchUpInside)
     }
 
     @objc func handleRefresh(){
         print("Refresh")
         let db = Firestore.firestore()
-        //var feedref:DocumentReference?
-        //var flagDocument: DocumentSnapshot
+
         if let email = currentemail{
             print("email handle \(email)")
             db.collection("feed").document(email).getDocument(completion: { [weak self] (snap, err) in
@@ -102,31 +111,7 @@ class HomeVC: UITableViewController {
                 }
             })
         }
-//        db.runTransaction { (transaction, nserror) -> Any? in
-//            do {
-//                if let feedref = feedref{
-//                    try flagDocument = transaction.getDocument(feedref)
-//                }
-//            } catch let fetchError as NSError {
-//                nserror?.pointee = fetchError
-//                return nil
-//            }
-//
-//            guard let oldState = flagDocument.data()?["sent"] as? Bool else {
-//                let error = NSError(
-//                    domain: "AppErrorDomain",
-//                    code: -1,
-//                    userInfo: [
-//                        NSLocalizedDescriptionKey: "Unable to retrieve state from snapshot \(flagDocument)"
-//                    ]
-//                )
-//                nserror?.pointee = error
-//                return nil
-//            }
-//
-//        } completion: { (<#Any?#>, <#Error?#>) in
-//            <#code#>
-//        }
+
         
     }
     
@@ -182,7 +167,8 @@ class HomeVC: UITableViewController {
         cell.message = data[indexPath.row].message
         cell.admin = data[indexPath.row].admin
         cell.company = data[indexPath.row].company
-        cell.messageView.text = cell.message
+        //cell.messageView.text = cell.message
+        cell.timestamp = data[indexPath.row].timestamp
 
         if expandedIndexSet.contains(indexPath.row){
             cell.messageView.numberOfLines = 0
@@ -192,51 +178,12 @@ class HomeVC: UITableViewController {
         }
         // Configure the cell...
         cell.layoutSubviews()
+        
+        //Utilities.styleLabel(cell.messageView, height: self.tableView.estimatedRowHeight)
         return cell
     }
 
 
-}
-
-
-func fetchdata(completion: @escaping (_ data:[CellData]?, _ email: String)->()){
-    if Auth.auth().currentUser != nil {
-        let email = Auth.auth().currentUser?.email
-        print("Auth current user email: \(String(describing: email))")
-        let db = Firestore.firestore()
-        var feedquery : Query?
-        var tempdata: [CellData] = []
-        if let emailul = email{
-            let feedref = db.collection("feed").document(emailul).collection("1")
-            feedquery = feedref.order(by: "timestamp", descending: true).limit(to: 3)
-            if let feed = feedquery{
-                feed.getDocuments { (snap, err) in
-                    if let error = err{
-                        print("avem o eroare la feedref2 \(error)")
-                    }
-                    else{
-                        //print("Snap. documents: \(snap?.documents)")
-                        if let documents = snap?.documents{
-                            for document in documents{
-                                let datafetched = document.data()
-                                let coimage = UIImage(named: datafetched["firma"] as! String)
-                                let message = datafetched["message"] as! String
-                                let company = datafetched["firma"] as! String
-                                let admin = datafetched["postcreator"] as! String
-                                
-                                tempdata.append(CellData(company: company, coimage: coimage, admin: admin, message: message))
-                               // print("Document ID : \(document.documentID) and document data \(document.data())")
-                            }
-                            //print("Finished tempdata: \(tempdata)")
-                            DispatchQueue.main.async {
-                                completion(tempdata, emailul)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 extension HomeVC: SendCredentials {
@@ -251,4 +198,44 @@ extension HomeVC: SendCredentials {
         
     }
     
+}
+
+extension Date {
+
+    static func timeFromLshToRhs (lhs: Date, rhs: Date) -> TimeInterval {
+        return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
+    }
+
+}
+
+extension TimeInterval {
+    var formatted: String {
+        let endingDate = Date()
+        let startingDate = endingDate.addingTimeInterval(-self)
+        let calendar = Calendar.current
+
+        let componentsNow = calendar.dateComponents([.hour, .minute, .second], from: startingDate, to: endingDate)
+        if let hour = componentsNow.hour, let minute = componentsNow.minute, let seconds = componentsNow.second {
+            //return "\(String(format: "%02d", hour)):\(String(format: "%02d", minute)):\(String(format: "%02d", seconds))"
+            if hour < 2{
+                if minute < 2 {
+                    if minute == 0 {
+                        return "about \(String(format: "%02d", seconds)) seconds ago "
+                    }
+                    return "\(String(format: "%02d", minute)) min. and \(String(format: "%02d", seconds)) sec. ago "
+                }
+                if hour == 0 {
+                    return "\(String(format: "%02d", minute)) minutes ago "
+                }
+                return "about \(String(format: "%02d", hour)) hours and \(String(format: "%02d", minute)) minutes ago "
+            }
+            if hour > 24 {
+                return "\(String(format: "%02d", hour/24)) days, \(hour % 24) h ago"
+            }
+            return "about \(String(format: "%02d", hour + 1)) hours ago"
+    
+        } else {
+            return ""
+        }
+    }
 }

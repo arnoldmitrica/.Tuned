@@ -14,6 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+//        let app = application.delegate
+//        let def = UserDefaults.standard
+//        let is_authenticated = def.bool(forKey: "isUserLoggedIn") // return false if not found or stored value
+//        if is_authenticated {
+//            window.rootViewController = ViewController()// change rootViewController to HomeController
+//            window.makeKeyAndVisible() // show window
+//        }
         // Override point for customization after application launch.
         FirebaseApp.configure()
         return true

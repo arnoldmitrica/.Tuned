@@ -8,7 +8,6 @@
 import UIKit
 import SideMenu
 import Firebase
-import LFTwitterProfile
 
 class ViewController: UITabBarController {
     
@@ -23,7 +22,7 @@ class ViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewControllers = [homevc(), UINavigationController(rootViewController: addpost()), profile()]
-        defaults.setValue(false, forKey: "isUserLoggedIn")
+        //defaults.setValue(false, forKey: "isUserLoggedIn")
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -37,9 +36,9 @@ class ViewController: UITabBarController {
        // let initialvc = UINavigationController(rootViewController: InitialViewController())
        // initialvc.modalPresentationStyle = .fullScreen
         if defaults.object(forKey: "isUserLoggedIn") as? Bool == false {
-            let initialvc = UINavigationController(rootViewController: InitialViewController())
-            initialvc.modalPresentationStyle = .fullScreen
-            present(initialvc, animated: true, completion: nil)
+//            let initialvc = UINavigationController(rootViewController: InitialViewController())
+//            initialvc.modalPresentationStyle = .fullScreen
+//            present(initialvc, animated: true, completion: nil)
         }
         //present(initialvc, animated: true, completion: nil)
         
@@ -61,10 +60,11 @@ class ViewController: UITabBarController {
         return post
     }
     
-    func profile() -> TwitterProfileViewController{
+    func profile() -> UIViewController{
         let profilevc = ProfileViewController()
         profilevc.title = "Your profile"
-        profilevc.tabBarItem = UITabBarItem(tabBarSystemItem: .topRated, tag: 0)
+        let iconImage = UIImage.init(named: "profile36.png")
+        profilevc.tabBarItem = UITabBarItem(title: "Profile", image: iconImage, tag: 0)
         return profilevc
     }
 

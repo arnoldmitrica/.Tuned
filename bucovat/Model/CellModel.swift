@@ -13,4 +13,5 @@ struct CellData{
     var coimage: UIImage?
     var admin: String?
     var message: String?
+    var timestamp: String?
 }
