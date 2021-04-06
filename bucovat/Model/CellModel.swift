@@ -8,10 +8,16 @@
 import Foundation
 import UIKit
 
-struct CellData{
-    var company: String?
+struct CompanyData:Feed{
+    var name: String
     var coimage: UIImage?
     var admin: String?
     var message: String?
-    var timestamp: String?
+    var timestamp: String
+    var email:String?
+}
+
+protocol Feed{
+    var name: String { get set }
+    var timestamp:String { get set }
 }

@@ -15,7 +15,7 @@ class ProfileViewController: UIViewController {
     
     // MARK: - Properties
     
-    var data = [CellData]()
+    var data = [CompanyData]()
     var flagDataIsDownloaded = false
     lazy var segmentedfeedview: UITableView = {
         let segmentedfeedview = UITableView()
@@ -327,7 +327,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         cell.coimage = data[indexPath.row].coimage
         cell.message = data[indexPath.row].message
         cell.admin = data[indexPath.row].admin
-        cell.company = data[indexPath.row].company
+        cell.company = data[indexPath.row].name
         cell.timestamp = data[indexPath.row].timestamp
 
 

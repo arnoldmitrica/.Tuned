@@ -43,13 +43,14 @@ class ViewController: UITabBarController {
         //present(initialvc, animated: true, completion: nil)
         
     }
-    func homevc() -> UITableViewController{
-        let homevc = HomeVC()
+    func homevc() -> UINavigationController{
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let homevc = storyboard.instantiateViewController(withIdentifier: "Home")
         homevc.title = "Home"
         let iconImage = UIImage.init(named: "home.png")
         homevc.tabBarItem = UITabBarItem(title: "Home", image: iconImage, tag: 0)
         //homevc.tabBarItem = UITabBarItem(tabBarSystemItem: UITabBarItem.SystemItem., tag: 0)
-        return homevc
+        return UINavigationController(rootViewController: homevc)
     }
     func addpost() -> UIViewController{
         let post = AddPost()

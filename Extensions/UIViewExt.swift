@@ -42,5 +42,15 @@ extension UIView {
             heightAnchor.constraint(equalToConstant: height).isActive = true
         }
     }
+    
+    func loadViewFromNib(nibName:String) -> UIView?{
+        let bundle = Bundle(for: type(of: self))
+        let nibName = String(describing: type(of: self))
+        
+        let nib = UINib(nibName: nibName, bundle: bundle)
+        
+        let view = nib.instantiate(withOwner: self, options: nil).first as? UIView
+        return view
+    }
 }
 

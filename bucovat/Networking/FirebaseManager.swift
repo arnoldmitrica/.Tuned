@@ -15,6 +15,7 @@ let STORAGE_DOCUMENT_DIR:String = "documents/"
 enum StorageFileType : String{
     case JPG, PNG, PDF
 }
+//F
 
 //struct StorageFileMetadata {
 //    var filename:String
@@ -36,19 +37,31 @@ class Fire {
     static let shared = Fire()
     
     let ref = Firestore.firestore()
+    var refrt = Database.database().reference()
     
     var myUID:String?
     var userEmail:String?// if you are logged in, if not, == nil
+    var myUsername:String?
     
     fileprivate init() {
         // setup USER listener
-        Auth.auth().addStateDidChangeListener { auth, listenerUser in
-            if let user = listenerUser {
+        Auth.auth().addStateDidChangeListener { [weak self] auth, listenerUser in
+            if let user = listenerUser, let self = self {
                 print("SIGN IN: \(user.email ?? user.uid)")
                 self.myUID = user.uid
                 self.userEmail = user.email
+                if let email = user.email{
+                    self.getUsername(email: email) { (res) in
+                        switch res {
+                        case .success(let username):
+                            self.myUsername = username
+                        case .failure(let err):
+                            print(err)
+                        }
+                    }
+                }
             } else {
-                self.myUID = nil
+                self?.myUID = nil
                 print("SIGN OUT: no user")
             }
         }
@@ -58,14 +71,15 @@ class Fire {
                 self.myUID = uid
             }
         }
+        
         print("Fileprivate init + \(String(describing: self.userEmail))")
     }
     func postData(message:String, completionHandler: @escaping (Bool) -> ()){
         if let email = self.userEmail {
             print("postdata + \(email)")
             var docref: DocumentReference? = nil
-            ref.document("users/\(email)").setData(["lastPost" : FieldValue.serverTimestamp()], merge: true)
-            docref = ref.collection("users/\(email)/posts").addDocument(data:["message" : message, "timestamp": Timestamp.init(), "email":email, "postcreator":"nobodyfornow", "firma": "enel" ]){ (error) in
+            //ref.document("users/\(email)").setData(["lastPost" : FieldValue.serverTimestamp()], merge: true)
+            docref = ref.collection("users/\(email)/posts").addDocument(data:["message" : message, "timestamp": Timestamp.init(), "email":email, "postcreator":"nobodyfornow", "firma": "Enel" ]){ (error) in
                 if let err = error {
                     print("Error adding document: \(err)")
                     completionHandler(false)
@@ -75,6 +89,57 @@ class Fire {
                 }
             }
         }
+    }
+    func getProfileRT(email:String,completionHandler: @escaping (Result<ProfileInfoModel,Error>) -> ()) {
+        
+        getUsername(email: email) { [weak self] (res) in
+            guard let strongSelf = self else { return }
+            switch res {
+            
+            case .success(let user):
+                strongSelf.refrt.child("bio/\(user)").observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+                  let profile = snapshot.value as? [String : AnyObject]
+                    if let profile = profile {
+                        let info = ProfileInfoModel(followers: profile["followers"] as? Int, following: profile["following"] as? Int, posts: profile["posts"] as? Int)
+                        completionHandler(Result.success(info))
+                    }
+                }) { (err) in
+                    print("error cancel block realtime database \(err.localizedDescription)")
+                }
+            case .failure(let err):
+                print("Error occured: \(err.localizedDescription)")
+            }
+        }
+    }
+    func getUsername(email:String,completionHandler: @escaping (Result<String,Error>) -> ()){
+        refrt.child("accounts").queryOrdered(byChild: "email").queryStarting(atValue: email).queryEnding(atValue: "\(email)\\uf8ff").observeSingleEvent(of: .value) { (snapshot) in
+            guard snapshot.exists() != false, let data = snapshot.value as? [String: Any] else { return }
+            let userDict = data.values.first as? [String:Any]
+            if let user = userDict{
+                if let username = user["username"] as? String{
+                    completionHandler(Result.success(username))
+                }
+            }
+        }
+    }
+    func checkIfFollows(username:String, completionHandler: @escaping (Result<Bool,Error>) -> ()){
+        refrt.child("following/\(self.myUsername ?? "")").child("\(username)/\(username)").observeSingleEvent(of: .value) { (snap) in
+            //print(snap.value, username, self.myUsername, String(describing: self.myUsername))
+            guard snap.exists() != false, let data = snap.value as? Bool else { return }
+            completionHandler(Result.success(data))
+        }
+    }
+    func getFollowers(email:String?, completionHandler: @escaping (Result<ProfileInfoModel,Error>) -> ()){
+        guard let email = email else { return }
+        ref.document("users/\(email)").getDocument(completion: { (docsnapshot, err) in
+            if let data = docsnapshot, let datainfo = data.data(){
+                let info = ProfileInfoModel(followers: datainfo["followers"] as? Int, following: datainfo["following"] as? Int, posts: datainfo["posts"] as? Int)
+                completionHandler(Result.success(info))
+            }
+            if let errore = err {
+                print("error completion at getfollowers \(errore.localizedDescription)")
+            }
+        })
     }
     
     func newUser(userEmail: String) {
@@ -118,10 +183,26 @@ class Fire {
             }
         }
     }
+    func getCurrentUser() -> String? {
+        if let user = self.myUsername{
+            return user
+        }
+        return nil
+    }
+    func getCurrentEmail() -> String?{
+        if let email = self.userEmail{
+            return email
+        }
+        return nil
+    }
+    func getFeedCollectionRef() -> CollectionReference{
+        let email = getCurrentEmail()
+        return Firestore.firestore().collection("feed/\(email ?? "anonymously")/1")
+    }
     
-    func fetchdata(_ reference: CollectionReference, completionHandler: @escaping (Result<[CellData], Error>) -> ()) {
+    func fetchdata(_ reference: CollectionReference, completionHandler: @escaping (Result<[CompanyData], Error>) -> ()) {
         let feedref = reference
-        var tempdata = [CellData]()
+        var tempdata = [CompanyData]()
         let feedquery = feedref.order(by: "timestamp", descending: true).limit(to: 3)
         feedquery.addSnapshotListener { (datasnapshot, error) in
             guard let document = datasnapshot else {
@@ -146,33 +227,11 @@ class Fire {
                 let timediff = Date.timeFromLshToRhs(lhs: timenow, rhs: timefromdocToDate)
                 let timediffstring = TimeInterval(timediff).formatted
                 //let timediff = Date.timeFromLshToRhs(lhs: timenow, rhs: timefromdocument)
-                
-                tempdata.append(CellData(company: company, coimage: coimage, admin: admin, message: message, timestamp: timediffstring))
+                let email = datafetched["email"] as! String
+                tempdata.append(CompanyData(name: company, coimage: coimage, admin: admin, message: message, timestamp: timediffstring, email: email))
             }
             completionHandler(Result.success(tempdata))
             tempdata.removeAll()
         }
-//        feedquery.getDocuments { (snap, err) in
-//            if let error = err{
-//                print("avem o eroare la feedref2 \(error)")
-//            }
-//            else{
-//                //print("Snap. documents: \(snap?.documents)")
-//                if let documents = snap?.documents{
-//                    for document in documents{
-//                        let datafetched = document.data()
-//                        let coimage = UIImage(named: datafetched["firma"] as! String)
-//                        let message = datafetched["message"] as! String
-//                        let company = datafetched["firma"] as! String
-//                        let admin = datafetched["postcreator"] as! String
-//
-//                        tempdata.append(CellData(company: company, coimage: coimage, admin: admin, message: message))
-//                        // print("Document ID : \(document.documentID) and document data \(document.data())")
-//                    }
-//                    //print("Finished tempdata: \(tempdata)")
-//                    completionHandler(tempdata)
-//                }
-//            }
-//        }
     }
 }
