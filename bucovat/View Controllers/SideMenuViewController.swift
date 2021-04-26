@@ -2,7 +2,7 @@
 //  SideMenuViewController.swift
 //  bucovat
 //
-//  Created by Arnold Mitricã on 31.12.2020.
+//  Created by Arnold Mitricã on 31.11.2020.
 //
 
 import UIKit

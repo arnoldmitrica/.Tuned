@@ -9,7 +9,7 @@ import Foundation
 
 class HomeViewModel {
     
-    let viewModels = Observable<[RowViewModel]>(value: [])
+    let viewModels = Observable<[WrapperForUserTypes]>(value: [])
     let title = Observable<String>(value: "Loading")
     let isLoading = Observable<Bool>(value: false)
     let isTableViewHidden = Observable<Bool>(value: false)

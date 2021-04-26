@@ -9,12 +9,14 @@ import Foundation
 import UIKit
 import Firebase
 import FirebaseFirestore
+import PhotosUI
 
 let STORAGE_IMAGE_DIR:String = "images/"
 let STORAGE_DOCUMENT_DIR:String = "documents/"
 enum StorageFileType : String{
     case JPG, PNG, PDF
 }
+
 //F
 
 //struct StorageFileMetadata {
@@ -42,6 +44,8 @@ class Fire {
     var myUID:String?
     var userEmail:String?// if you are logged in, if not, == nil
     var myUsername:String?
+    typealias ResultProfileInfoModel = Result<ProfileInfoModel, Error>
+    typealias ResultSecondBatch = Result<SecondBatch,Error>
     
     fileprivate init() {
         // setup USER listener
@@ -90,26 +94,30 @@ class Fire {
             }
         }
     }
-    func getProfileRT(email:String,completionHandler: @escaping (Result<ProfileInfoModel,Error>) -> ()) {
+    func getSecondBatchForProfileInfoModel(email:String, user:String, completionHandler: @escaping (ResultSecondBatch) -> ()) {
         
-        getUsername(email: email) { [weak self] (res) in
-            guard let strongSelf = self else { return }
-            switch res {
-            
-            case .success(let user):
-                strongSelf.refrt.child("bio/\(user)").observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
-                  let profile = snapshot.value as? [String : AnyObject]
-                    if let profile = profile {
-                        let info = ProfileInfoModel(followers: profile["followers"] as? Int, following: profile["following"] as? Int, posts: profile["posts"] as? Int)
-                        completionHandler(Result.success(info))
-                    }
-                }) { (err) in
-                    print("error cancel block realtime database \(err.localizedDescription)")
-                }
-            case .failure(let err):
-                print("Error occured: \(err.localizedDescription)")
+        self.refrt.child("bio/\(user)").observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+            if let profile = snapshot.value as? [String : AnyObject]{
+                completionHandler(ResultSecondBatch.success(SecondBatch(followers: profile["followers"] as? Int, following: profile["following"] as? Int, posts: profile["posts"] as? Int)))
             }
-        }
+    }
+        )
+//    func getSecondBatchFoorProfileInfoModel(email:String, user:String, completionHandler: @escaping (Result<ProfileInfoModel,Error>) -> ()) {
+//        
+//        self.refrt.child("bio/\(user)").observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+//                  let profile = snapshot.value as? [String : AnyObject]
+//                    if let profile = profile {
+//                        OpenProfileManager.shared.getInfoModel(email: email, user: user, completioHandler: { (infoProfile) in
+//                            infoProfile.followers = profile["followers"] as? Int
+//                            infoProfile.following = profile["following"] as? Int
+//                            infoProfile.posts = profile["posts"] as? Int
+//                            completionHandler(Result.success(infoProfile))
+//                        }
+//                        )
+//                    }
+//                }) { (err) in
+//                    print("error cancel block realtime database \(err.localizedDescription)")
+//                }
     }
     func getUsername(email:String,completionHandler: @escaping (Result<String,Error>) -> ()){
         refrt.child("accounts").queryOrdered(byChild: "email").queryStarting(atValue: email).queryEnding(atValue: "\(email)\\uf8ff").observeSingleEvent(of: .value) { (snapshot) in
@@ -129,18 +137,18 @@ class Fire {
             completionHandler(Result.success(data))
         }
     }
-    func getFollowers(email:String?, completionHandler: @escaping (Result<ProfileInfoModel,Error>) -> ()){
-        guard let email = email else { return }
-        ref.document("users/\(email)").getDocument(completion: { (docsnapshot, err) in
-            if let data = docsnapshot, let datainfo = data.data(){
-                let info = ProfileInfoModel(followers: datainfo["followers"] as? Int, following: datainfo["following"] as? Int, posts: datainfo["posts"] as? Int)
-                completionHandler(Result.success(info))
-            }
-            if let errore = err {
-                print("error completion at getfollowers \(errore.localizedDescription)")
-            }
-        })
-    }
+//    func getFollowers(email:String?, completionHandler: @escaping (Result<ProfileInfoModel,Error>) -> ()){
+//        guard let email = email else { return }
+//        ref.document("users/\(email)").getDocument(completion: { (docsnapshot, err) in
+//            if let data = docsnapshot, let datainfo = data.data(){
+//                let info = ProfileInfoModel(followers: datainfo["followers"] as? Int, following: datainfo["following"] as? Int, posts: datainfo["posts"] as? Int)
+//                completionHandler(Result.success(info))
+//            }
+//            if let errore = err {
+//                print("error completion at getfollowers \(errore.localizedDescription)")
+//            }
+//        })
+//    }
     
     func newUser(userEmail: String) {
         ref.document("users/\(userEmail)/followers/1").setData([userEmail: true])
@@ -200,9 +208,95 @@ class Fire {
         return Firestore.firestore().collection("feed/\(email ?? "anonymously")/1")
     }
     
-    func fetchdata(_ reference: CollectionReference, completionHandler: @escaping (Result<[CompanyData], Error>) -> ()) {
+    func feetchFirstBatchOfProfileInfoModel(from email:String, and company:String, completionHandler: @escaping (ResultProfileInfoModel) -> Void){
+        var result : ResultProfileInfoModel?
+        let group = DispatchGroup()
+        group.enter()
+            self.ref.document("users/\(email)/firme/\(company)").getDocument(source: .default, completion: { (snap, err) in
+                
+                if let error = err {
+                    print(error.localizedDescription)
+                    result = ResultProfileInfoModel.failure(error)
+                    group.leave()
+                    
+                }
+                else{
+                    if let info = snap?.data(){
+                        result = ResultProfileInfoModel.success(ProfileInfoModel(name: info["name"] as! String, avatarImage: info["avatarImage"] as? NSData ?? NSData(data: UIImage(named: "unknown")!.pngData()!)))
+                    }
+                    group.leave()
+                }
+            })
+        
+        group.notify(queue: .main){
+            guard let profile = result else { return }
+            completionHandler(profile)
+        }
+
+//        self.ref.document("users/\(email)/firme/\(company)").getDocument(source: .default, completion: { (snap, err) in
+//            if let error = err {
+//                print(error.localizedDescription)
+//                completionHandler(.failure(error))
+//
+//            }
+//            else{
+//                if let info = snap?.data(){
+//                    completionHandler(.success(ProfileInfoModel(name: info["name"] as! String, avatarImage: info["avatarImage"] as? NSData ?? NSData(data: UIImage(named: "unknown")!.pngData()!))))
+//                }
+//
+//            }
+//        })
+    }
+    
+    func fetchFirstBatchOfProfileInfoModel(from email:String, and company:String, completionHandler: @escaping (ResultProfileInfoModel) -> Void){
+        //var source = fireNow
+        let group = DispatchGroup()
+        var result: ResultProfileInfoModel!
+        group.enter()
+        self.ref.document("users/\(email)/firme/\(company)").getDocument(source:.default, completion: { (snap, err) in
+            
+            if let error = err {
+                //If there is no data in cache then we choose to read from the server
+                //source = FirestoreSource.default
+                print(error.localizedDescription)
+                result = .failure(error)
+                //completionHandler(.failure(error))
+                //group.leave()
+            }
+            else{
+                if let info = snap?.data(){
+                    result = .success(ProfileInfoModel(name: info["name"] as! String, avatarImage: info["avatarImage"] as? NSData ?? NSData(data: UIImage(named: "unknown")!.pngData()!)))
+                    //completionHandler(.success(ProfileInfoModel(name: info["name"] as! String, avatarImage: info["avatarImage"] as? NSData ?? NSData(data: UIImage(named: "unknown")!.pngData()!))))
+                }
+                
+            }
+            
+            group.leave()
+        })
+        group.notify(queue: DispatchQueue.main) {
+            completionHandler(result)
+        }
+    }
+    
+    func fetchFirstBatchOofProfileInfoModel(from email:String, and company:String, completionHandler: @escaping (Result<ProfileInfoModel, Error>) -> Void){
+        
+        self.ref.document("users/\(email)/firme/\(company)").getDocument(source: .default, completion: { (snap, err) in
+            if let error = err {
+                print(error.localizedDescription)
+                completionHandler(.failure(error))
+                
+            }
+            else{
+                if let info = snap?.data(){
+                    completionHandler(.success(ProfileInfoModel(name: info["name"] as! String, avatarImage: info["avatarImage"] as? NSData ?? NSData(data: UIImage(named: "unknown")!.pngData()!))))
+                }
+                
+            }
+        })
+    }
+    func fetchdata(_ reference: CollectionReference, completionHandler: @escaping (Result<[FeedData], Error>) -> ()) {
         let feedref = reference
-        var tempdata = [CompanyData]()
+        var tempdata = [FeedData]()
         let feedquery = feedref.order(by: "timestamp", descending: true).limit(to: 3)
         feedquery.addSnapshotListener { (datasnapshot, error) in
             guard let document = datasnapshot else {
@@ -214,7 +308,6 @@ class Fire {
             print("\(source) refference: \(reference.path)")
             for document in document.documents{
                 let datafetched = document.data()
-                let coimage = UIImage(named: datafetched["firma"] as! String)
                 let message = datafetched["message"] as! String
                 let company = datafetched["firma"] as! String
                 let admin = datafetched["postcreator"] as! String
@@ -228,10 +321,30 @@ class Fire {
                 let timediffstring = TimeInterval(timediff).formatted
                 //let timediff = Date.timeFromLshToRhs(lhs: timenow, rhs: timefromdocument)
                 let email = datafetched["email"] as! String
-                tempdata.append(CompanyData(name: company, coimage: coimage, admin: admin, message: message, timestamp: timediffstring, email: email))
+                //OpenProfileManager.shared.getInfoModel(email: email, user: company, completioHandler: { (res) in
+               // })
+                //OpenProfileManager.shared.temporarilyProfiles.value[email]?.append(company)
+                //OpenProfileManager.shared.getInfoModel(email: email, user: company, completionHandler: nil)
+                //tempdata.append(FeedData(feedUserDetails: infoModel, admin: admin, message: message, timestamp: timediffstring))
+                tempdata.append(FeedData(user: company, email: email, admin: admin, message: message, timestamp: timediffstring))
             }
-            completionHandler(Result.success(tempdata))
-            tempdata.removeAll()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                completionHandler(Result.success(tempdata))
+                tempdata.removeAll()
+            }
+            //completionHandler(Result.success(tempdata))
+            //tempdata.removeAll()
+        }
+    }
+    func changeAvatarImage(with image: UIImage?, for company:String, completionHandler: @escaping (Result<String, Error>) -> ()){
+        guard let image = image else { return }
+        guard let compressedImage = image.compressTo(0.2) else { return }
+        guard let userEmail = userEmail else { return }
+        guard let imageForFirebase = compressedImage.pngData() as NSData? else { return }
+        ref.document("users/\(userEmail)/firme/\(company)").setData(["avatarImage" : imageForFirebase], merge: true) { (err) in
+            if let error = err{
+                print(error.localizedDescription)
+            }
         }
     }
 }

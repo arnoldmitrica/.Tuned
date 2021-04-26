@@ -2,7 +2,7 @@
 //  LoginViewController.swift
 //  bucovat
 //
-//  Created by Arnold Mitricã on 01.01.2021.
+//  Created by Arnold Mitricã on 01.12.2021.
 //
 
 import UIKit

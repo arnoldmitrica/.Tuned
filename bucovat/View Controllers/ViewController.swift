@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  bucovat
 //
-//  Created by Arnold Mitricã on 28.12.2020.
+//  Created by Arnold Mitricã on 28.11.2020.
 //
 
 import UIKit
@@ -17,6 +17,7 @@ class ViewController: UITabBarController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("View will appear in VC")
+        
     }
     
     override func viewDidLoad() {
@@ -46,7 +47,7 @@ class ViewController: UITabBarController {
     func homevc() -> UINavigationController{
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let homevc = storyboard.instantiateViewController(withIdentifier: "Home")
-        homevc.title = "Home"
+        //homevc.title = "Home"
         let iconImage = UIImage.init(named: "home.png")
         homevc.tabBarItem = UITabBarItem(title: "Home", image: iconImage, tag: 0)
         //homevc.tabBarItem = UITabBarItem(tabBarSystemItem: UITabBarItem.SystemItem., tag: 0)

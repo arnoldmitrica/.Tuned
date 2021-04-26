@@ -7,13 +7,20 @@
 
 import UIKit
 import FirebaseUI
+import BSImagePicker
+import Photos
 
 class OpenProfileViewController: UIViewController {
         
     var viewModel: ProfileViewModel {
         return controller.viewModel
     }
-    @IBOutlet var imageView: UIImageView!
+    @IBOutlet var imageView: UIImageView!{
+        didSet {
+            imageView.isUserInteractionEnabled = true
+        }
+    }
+    var profileImageReplaced:UIImage!
     @IBOutlet var followers: UILabel!
     @IBOutlet var following: UILabel!
     @IBOutlet var scrollView: UIScrollView!
@@ -41,12 +48,14 @@ class OpenProfileViewController: UIViewController {
     func initBinding(){
         viewModel.profileView.addObserver(fireNow: false) { [weak self] (profile) in
             guard let strongSelf = self else { return }
-            strongSelf.followers.text = String(profile?.followers ?? 0)
-            strongSelf.following.text = String(profile?.following ?? 0)
-            strongSelf.posts.text = String(profile?.posts ?? 0)
+            strongSelf.followers.text = String(profile.followers ?? 0)
+            strongSelf.following.text = String(profile.following ?? 0)
+            strongSelf.posts.text = String(profile.posts ?? 0)
         }
         let storageRef = StorageReference().child("enel.png")
         imageView.sd_setImage(with: storageRef, placeholderImage: nil)
+        let tapGR = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
+        imageView.addGestureRecognizer(tapGR)
         
         let profileButtons = ProfileDetailsView(viewModel: viewModel)
         self.scrollView.addSubview(profileButtons)
@@ -59,14 +68,52 @@ class OpenProfileViewController: UIViewController {
         
     }
     
+    @objc func imageTapped(sender: UITapGestureRecognizer){
+        let imagePicker = ImagePickerController()
+        imagePicker.settings.selection.max = 1
+        presentImagePicker(imagePicker, select: { (asset) in
+        }, deselect: { (asset) in
+             
+        }, cancel: { (assets) in
+             
+        }, finish: { (assets) in
+             
+            let options: PHImageRequestOptions = PHImageRequestOptions()
+            options.deliveryMode = .fastFormat
+            let group = DispatchGroup()
+            //imageView.image = assets.first
+            //self.selectedImages = []
+            //self.photoSliderView.scrollView.reloadInputViews()
+                for asset in assets {
+                    group.enter()
+                        PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options) { (image, info) in
+                            //self.selectedImages.append(image!)
+                            self.profileImageReplaced = image
+                            group.leave()
+                        }
+                }
+            group.notify(queue: DispatchQueue.main) { [self] in
+                print("Done")
+                Fire.shared.changeAvatarImage(with: profileImageReplaced, for: viewModel.name.value) { (res) in
+                    switch res{
+                    case .success(let message):
+                        print(message)
+                    case .failure(let error):
+                        print("error changing avatar: \(error)")
+                    }
+                }
+            }
+        })
+    }
     @objc func didPullToRefresh(){
-        controller.fetchData { (finished) in
+        controller.fetchSecondBatchOfProfileInfoModel(completionHandler: { (finished) in
             if finished {
                 DispatchQueue.main.async {
                     self.scrollView.refreshControl?.endRefreshing()
                 }
             }
         }
+        )
     }
     /*
     // MARK: - Navigation

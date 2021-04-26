@@ -8,16 +8,16 @@
 import Foundation
 import UIKit
 
-struct CompanyData:Feed{
-    var name: String
-    var coimage: UIImage?
+struct FeedData:Feed,Hashable{
+    var user: String
+    var email: String
     var admin: String?
     var message: String?
     var timestamp: String
-    var email:String?
 }
 
 protocol Feed{
-    var name: String { get set }
+    var user : String { get set }
+    var email : String { get set }
     var timestamp:String { get set }
 }

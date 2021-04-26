@@ -10,6 +10,7 @@ import Foundation
 
 final class Cache<Key: Hashable, Value> {
     private let wrapped = NSCache<WrappedKey, Entry>()
+    private let obsvWrapped = Observable<NSCache<WrappedKey, Entry>>(value: NSCache<WrappedKey, Entry>())
     
     func insert(_ value: Value, forKey key: Key) {
         let entry = Entry(value: value)
@@ -23,6 +24,15 @@ final class Cache<Key: Hashable, Value> {
     
     func removeValue(forKey key: Key) {
         wrapped.removeObject(forKey: WrappedKey(key))
+    }
+
+    
+    func printValues(){
+        if let all = wrapped.value(forKey: "allObjects") as? NSArray {
+            for object in all {
+                print("object is \(object)")
+            }
+        }
     }
 }
 

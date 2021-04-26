@@ -15,6 +15,9 @@
 		F41C0EEC260B665600F4F45C /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41C0EEA260B665600F4F45C /* ImageLoader.swift */; };
 		F41C0EED260B665600F4F45C /* UIImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41C0EEB260B665600F4F45C /* UIImageLoader.swift */; };
 		F41C0EEF260B669300F4F45C /* ImageViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41C0EEE260B669300F4F45C /* ImageViewExt.swift */; };
+		F4268A742622495700444E3D /* UserTypesandWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4268A732622495700444E3D /* UserTypesandWrapper.swift */; };
+		F4268A76262CDF6F00444E3D /* TunedErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4268A75262CDF6F00444E3D /* TunedErrors.swift */; };
+		F4268A78262CE2C800444E3D /* FeedProfileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4268A77262CE2C800444E3D /* FeedProfileInfoController.swift */; };
 		F42CE54E25E509E000DB5F0A /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42CE54D25E509E000DB5F0A /* ProfileViewController.swift */; };
 		F434A1AA259DF99F0025A847 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F434A1A9259DF99F0025A847 /* GoogleService-Info.plist */; };
 		F452C0D425EEAA7300640B55 /* UIButtonExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F452C0D325EEAA7300640B55 /* UIButtonExtensions.swift */; };
@@ -83,6 +86,9 @@
 		F41C0EEA260B665600F4F45C /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		F41C0EEB260B665600F4F45C /* UIImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageLoader.swift; sourceTree = "<group>"; };
 		F41C0EEE260B669300F4F45C /* ImageViewExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewExt.swift; sourceTree = "<group>"; };
+		F4268A732622495700444E3D /* UserTypesandWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTypesandWrapper.swift; sourceTree = "<group>"; };
+		F4268A75262CDF6F00444E3D /* TunedErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunedErrors.swift; sourceTree = "<group>"; };
+		F4268A77262CE2C800444E3D /* FeedProfileInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedProfileInfoController.swift; sourceTree = "<group>"; };
 		F42CE54D25E509E000DB5F0A /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		F434A1A9259DF99F0025A847 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F452C0D325EEAA7300640B55 /* UIButtonExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExtensions.swift; sourceTree = "<group>"; };
@@ -229,6 +235,7 @@
 				F41C0ECD2605FA9C00F4F45C /* CacheService.swift */,
 				F464C7B8260DD638004F4967 /* ImageCache.swift */,
 				F464C820261B0B28004F4967 /* CellConfigurable.swift */,
+				F4268A75262CDF6F00444E3D /* TunedErrors.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -255,6 +262,7 @@
 				F4FFE837260243D9006257BB /* OpenProfileController.swift */,
 				F4B284F5259B68EA005F6565 /* HomeVC.swift */,
 				F464C81C2618AA62004F4967 /* HomeController.swift */,
+				F4268A77262CE2C800444E3D /* FeedProfileInfoController.swift */,
 				F4B284D9259A4A32005F6565 /* ViewController.swift */,
 				F42CE54D25E509E000DB5F0A /* ProfileViewController.swift */,
 				F4095117259E1D6C00F51AE8 /* SideMenuViewController.swift */,
@@ -279,6 +287,7 @@
 				F493151A25DD5D7400314486 /* CellModel.swift */,
 				F493151E25DD5E0900314486 /* UserCredentialsModel.swift */,
 				F41C0EC72604A49C00F4F45C /* ProfileInfoModel.swift */,
+				F4268A732622495700444E3D /* UserTypesandWrapper.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -420,9 +429,11 @@
 				F464C7F926166D9E004F4967 /* CompanyViewCell.swift in Sources */,
 				F4FFE838260243D9006257BB /* OpenProfileController.swift in Sources */,
 				F4B284F6259B68EA005F6565 /* HomeVC.swift in Sources */,
+				F4268A78262CE2C800444E3D /* FeedProfileInfoController.swift in Sources */,
 				F452C0D425EEAA7300640B55 /* UIButtonExtensions.swift in Sources */,
 				F4EC060425DBB6C200DECB38 /* KeyboardToolbarButton.swift in Sources */,
 				F4FFE832260241B3006257BB /* Observable.swift in Sources */,
+				F4268A742622495700444E3D /* UserTypesandWrapper.swift in Sources */,
 				F4EC060725DBCF1300DECB38 /* ImageCell.swift in Sources */,
 				F4EC060125DBB67100DECB38 /* KeyboardToolbar.swift in Sources */,
 				F4FFE83E2602661B006257BB /* ProfileDetailsView.swift in Sources */,
@@ -436,6 +447,7 @@
 				F493151F25DD5E0900314486 /* UserCredentialsModel.swift in Sources */,
 				F464C821261B0B28004F4967 /* CellConfigurable.swift in Sources */,
 				F41C0EED260B665600F4F45C /* UIImageLoader.swift in Sources */,
+				F4268A76262CDF6F00444E3D /* TunedErrors.swift in Sources */,
 				F41C0EC82604A49C00F4F45C /* ProfileInfoModel.swift in Sources */,
 				F4095118259E1D6C00F51AE8 /* SideMenuViewController.swift in Sources */,
 				F464C81F261A1638004F4967 /* CompanyViewModel.swift in Sources */,

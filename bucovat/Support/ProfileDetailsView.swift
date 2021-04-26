@@ -6,15 +6,14 @@
 //
 
 import UIKit
-import MaterialComponents.MDCButton
 
 @IBDesignable
 final class ProfileDetailsView: UIView{
     @IBOutlet var butt: UIButton!
     @IBOutlet var containerv: UIView!
-    @IBOutlet var website: UIButton!
-    @IBOutlet var shop: UIButton!
-    @IBOutlet var location: UIButton!
+    @IBOutlet var isFollowedOutlet: UIButton!
+    @IBOutlet var messageOutlet: UIButton!
+    @IBOutlet var shopOutlet: UIButton!
     var viewmodel:ProfileViewModel!
     
     override init(frame: CGRect){
@@ -43,23 +42,25 @@ final class ProfileDetailsView: UIView{
 
         containerv.translatesAutoresizingMaskIntoConstraints = false
         containerv.anchor(top: self.topAnchor, left: self.leftAnchor, bottom: self.bottomAnchor, right: self.rightAnchor, paddingTop: 1, paddingLeft: 1, paddingBottom: 1, paddingRight: 1)
-        website.addTarget(self, action: #selector(websitepressed), for: .touchUpInside)
-        website.setBordersSettings()
-        shop.setBordersSettings()
-        location.setBordersSettings()
+        messageOutlet.addTarget(self, action: #selector(websitepressed), for: .touchUpInside)
+        messageOutlet.setBordersSettings()
+        isFollowedOutlet.setBordersSettings()
+        shopOutlet.setBordersSettings()
+        //shopOutlet.setTitle("Shop", for: .normal)
+        //shopOutlet.setTitleColor(.white, for: .normal)
         
         //Checking if it is already in cache
         if !OpenProfileManager.shared.checkViewModel(email: self.viewmodel.email.value ?? ""){
             self.viewmodel.isFollowed.addObserver(fireNow: true) { (val) in
                 if val == false {
-                    self.shop.setTitle("Follow", for: .normal)
+                    self.isFollowedOutlet.setTitle("Follow", for: .normal)
                     //Loading or not following
                 }
                 else if val == true{
-                    self.shop.setTitle("Following", for: .normal)
+                    self.isFollowedOutlet.setTitle("Following", for: .normal)
                 }
                 else{
-                    self.shop.setTitle("Loading...", for: .normal)
+                    self.isFollowedOutlet.setTitle("Loading...", for: .normal)
                 }
                 OpenProfileManager.shared.saveViewModel(email: self.viewmodel.email.value ?? "", profile: self.viewmodel)
             }
@@ -72,11 +73,11 @@ final class ProfileDetailsView: UIView{
             switch res{
             case .success(let val):
                 if val == true {
-                    self.shop.setTitle("Following", for: .normal)
+                    self.isFollowedOutlet.setTitle("Following", for: .normal)
                     self.viewmodel.isFollowed.value = true
                 }
                 else if val == false{
-                    self.shop.setTitle("Follow", for: .normal)
+                    self.isFollowedOutlet.setTitle("Follow", for: .normal)
                     self.viewmodel.isFollowed.value = false
                 }
             case .failure(let err):
@@ -100,7 +101,6 @@ func setBordersSettings() {
         self.layer.borderWidth = 1.0
         self.layer.cornerRadius = 8.0
     self.layer.borderColor = UIColor.systemPurple.cgColor
-    self.setTitleColor(UIColor.systemPurple, for: .normal)
         self.layer.masksToBounds = true
     }
 }

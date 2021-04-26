@@ -2,7 +2,7 @@
 //  HomeVC.swift
 //  bucovat
 //
-//  Created by Arnold Mitricã on 29.12.2020.
+//  Created by Arnold Mitricã on 29.11.2020.
 //
 
 import UIKit
@@ -11,7 +11,7 @@ import Firebase
 import FirebaseFirestore
 
 class HomeVC: UITableViewController {
-    var data = [CompanyData]()
+    var data = [FeedData]()
     var currentemail:String?
     var expandedIndexSet: IndexSet = []
 
@@ -31,19 +31,22 @@ class HomeVC: UITableViewController {
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(label)
+        self.navigationController?.view.addSubview(label)
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0)
+            label.centerYAnchor.constraint(equalTo: (navigationController?.view.centerYAnchor)!),
+            label.centerXAnchor.constraint(equalTo: (navigationController?.view.centerXAnchor)!, constant: 0)
             ])
         label.textColor = UIColor.white
         label.font = UIFont(name: "AmericanTypewriter-Bold", size: 24)
         return label
     }()
     
+    private lazy var dataSource = makeDataSource()
+    
     func initBinding() {
         viewModel.viewModels.addObserver(fireNow: false) { [weak self] (viewModels) in
-            self?.tableView.reloadData()
+            self?.updateTable(list: viewModels)
+            
         }
 
         viewModel.title.addObserver { [weak self] (title) in
@@ -58,10 +61,14 @@ class HomeVC: UITableViewController {
         viewModel.isLoading.addObserver(fireNow: true) { [weak self] (isLoading) in
             if isLoading {
                 self?.titleLabel.text = "Loading..."
+                self?.navigationController?.setNavigationBarHidden(true, animated: true)
                 //self?.titleLabel.topAnchor.constraint(equalTo: (self?.view.safeAreaLayoutGuide.topAnchor)!,constant: 10).isActive = true
                 print("isLoading = true")
+                self?.tabBarController?.tabBar.isHidden = true
             } else {
                 self?.titleLabel.text = ""
+                self?.navigationController?.setNavigationBarHidden(false, animated: true)
+                self?.tabBarController?.tabBar.isHidden = false
                 //self?.titleLabel.topAnchor.constraint(equalTo: (self?.view.safeAreaLayoutGuide.topAnchor)!,constant: -30).isActive = true
                 print("isLoading = false")
             }
@@ -70,7 +77,7 @@ class HomeVC: UITableViewController {
     func initView(){
         let refreshControll = UIRefreshControl()
         self.tableView.refreshControl = refreshControll
-        tableView.refreshControl?.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        tableView.refreshControl?.addTarget(self, action: #selector(HomeVC.handleRefresh), for: .valueChanged)
                 
         seeNewPostButton = AddNewPostButton()
         view.addSubview(seeNewPostButton)
@@ -83,29 +90,6 @@ class HomeVC: UITableViewController {
         seeNewPostButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         seeNewPostButton.button.addTarget(self, action: #selector(handleRefresh), for: .touchUpInside)
     }
-//    func setamnewsfeed(){
-//        print("Setting newsfeed called")
-//        currentemail = Auth.auth().currentUser?.email
-//        Fire.shared.fetchdata(Firestore.firestore().collection("feed/\(currentemail ?? "anonymously")/1"), completionHandler: { (result) in
-//
-//            switch result {
-//
-//            case .success(let datatofetch):
-//                print("Datatofetched not nil")
-//                DispatchQueue.main.async {
-//                    self.data = datatofetch
-//                    self.seeNewPostButton.button.setTitle("New posts added", for: .normal)
-//                    self.seeNewPostButtonTopAnchor.constant = 20
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//                        self.seeNewPostButtonTopAnchor.constant = -44
-//                    }
-//                    self.tableView.reloadData()
-//                }
-//            case .failure(let err):
-//                print("Error occured: \(err.localizedDescription)")
-//            }
-//        })
-//    }
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
     
@@ -113,17 +97,28 @@ class HomeVC: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         print("view will appear homevc")
         super.viewWillAppear(animated)
-        
+        //self.titleLabel.text = "Loading..."
         sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: ["Hi, You!", "Add a topic"]))
         SideMenuManager.default.leftMenuNavigationController = sideMenu
     
         }
+    
     override func viewDidAppear(_ animated: Bool) {
         
     }
 
     override func viewDidLoad() {
-        navigationItem.title = ".Tuned"
+        
+        let titleLabel = UILabel()
+        titleLabel.text = "  .Tuned"
+        titleLabel.font = UIFont(name: "AmericanTypewriter-Bold", size: 23)
+        titleLabel.sizeToFit()
+        
+        let leftItem = UIBarButtonItem(customView: titleLabel)
+        self.navigationItem.leftBarButtonItem = leftItem
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Log out", style: .done, target: self, action: #selector(logout))
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        //self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: nil)
         super.viewDidLoad()
         sideMenu.leftSide = true
         SideMenuManager.default.leftMenuNavigationController = sideMenu
@@ -131,7 +126,7 @@ class HomeVC: UITableViewController {
         //SideMenuManager.default.addPanGestureToPresent(toView: view)
         tableView.separatorStyle = .none
         addpostsetting()
-                
+        
         //setamnewsfeed()
         
         initView()
@@ -141,8 +136,15 @@ class HomeVC: UITableViewController {
 
     @objc func handleRefresh(){
         print("Refresh")
-        tableView.reloadData()
+        //var snap = HomeVC.
+        var snap = self.dataSource.snapshot()
+        snap.reloadItems(viewModel.viewModels.value)
+        self.dataSource.apply(snap)
         refreshControl?.endRefreshing()
+        
+    }
+    
+    @objc func logout(){
         
     }
     
@@ -170,60 +172,31 @@ class HomeVC: UITableViewController {
         
         addPostButton.button.addTarget(self, action: #selector(newpost), for: .touchUpInside)
     }
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "Profile") as! OpenProfileViewController
-        
-        vc.controller.viewModel.email.value = viewModel.viewModels.value[indexPath.row].email
-        vc.controller.viewModel.name.value = viewModel.viewModels.value[indexPath.row].name
-        self.navigationController?.pushViewController(vc, animated: true)
-//        if(expandedIndexSet.contains(indexPath.row)){
-//            expandedIndexSet.remove(indexPath.row)
-//            print("remove")
-//        }
-//        else{
-//            expandedIndexSet.insert(indexPath.row)
-//            print("insert")
-//        }
-//        tableView.reloadRows(at: [indexPath], with: .automatic)
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return viewModel.viewModels.value.count
-        
-    }
-
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let rowViewModel = viewModel.viewModels.value[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: controller.cellIdentifier(for: rowViewModel), for: indexPath)
-        
-        
-        if let cell = cell as? CellConfigurable {
-            cell.setup(viewModel: rowViewModel)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            tableView.deselectRow(at: indexPath, animated: true)
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "Profile") as! OpenProfileViewController
+            
+        switch viewModel.viewModels.value[indexPath.row].viewModel {
+        case .company(let company):
+            vc.controller.viewModel.email.value = company.email
+            vc.controller.viewModel.name.value = company.name
         }
-        
-        /*
-
-        if expandedIndexSet.contains(indexPath.row){
-            cell.messageView.numberOfLines = 0
+            self.navigationController?.pushViewController(vc, animated: true)
+    //        if(expandedIndexSet.contains(indexPath.row)){
+    //            expandedIndexSet.remove(indexPath.row)
+    //            print("remove")
+    //        }
+    //        else{
+    //            expandedIndexSet.insert(indexPath.row)
+    //            print("insert")
+    //        }
+    //        tableView.reloadRows(at: [indexPath], with: .automatic)
         }
-        else{
-            cell.messageView.numberOfLines = 3
-        }
- 
- */
-        // Configure the cell...
-        //cell.layoutSubviews()
-        
-        //Utilities.styleLabel(cell.messageView, height: self.tableView.estimatedRowHeight)
-        return cell
-    }
-
-
+    
 }
+
 
 extension HomeVC: SendCredentials {
     
@@ -233,8 +206,60 @@ extension HomeVC: SendCredentials {
            sideMenu = SideMenuNavigationController(rootViewController: SideMenuViewController(with: menuItems))
             SideMenuManager.default.leftMenuNavigationController = sideMenu
         }
-        print("am ajuns extension homevc")
+        // print("am ajuns extension homevc")
         
     }
     
 }
+
+private extension HomeVC {
+    func makeDataSource() -> UITableViewDiffableDataSource<Section, WrapperForUserTypes> {
+        
+        return UITableViewDiffableDataSource(
+            tableView: tableView,
+            cellProvider: { [weak self]  tableView, indexPath, user in
+                switch user.viewModel{
+                case .company(let company):
+                    let cell = tableView.dequeueReusableCell(withIdentifier: (self?.controller.cellIdentifier(for: company as RowViewModel))!, for: indexPath)
+                    if let cell = cell as? CellConfigurable{
+                        cell.setup(viewModel: company as RowViewModel)
+                    }
+//                    if let cell = cell as? CompanyViewCell{
+//                        cell.infoModel = company
+//                    }
+                    return cell
+                }
+            }
+        )
+    }
+}
+extension HomeVC {
+    enum Section: CaseIterable {
+        case company
+        case empty
+    }
+}
+
+    extension HomeVC {
+        private func updateTable(list: [WrapperForUserTypes]) {
+            // Create a new snapshot on each load. Normally you might pull
+            // the existing snapshot and update it.
+            var snapshot = NSDiffableDataSourceSnapshot<Section, WrapperForUserTypes>()
+            defer {
+                DispatchQueue.main.async {
+                    self.dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
+                    print("snapshot.numberof \(snapshot.numberOfItems)")
+                }
+            }
+            
+            // If we have no data, just show the empty view
+            //        guard list = list. else{
+            //            snapshot.appendSections([Section.empty])
+            //            snapshot.appendItems([], toSection: .empty)
+            //        }
+            
+            //snapshot.appendItems(<#T##identifiers: [Wrapper]##[Wrapper]#>, toSection: [])
+            snapshot.appendSections([.company])
+            snapshot.appendItems(list,toSection: .company)
+        }
+    }

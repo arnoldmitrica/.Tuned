@@ -10,6 +10,7 @@ import UIKit.UIImage
 
 class HomeController{
     let viewModel:HomeViewModel
+    typealias ResultProfileInfoModel = Result<ProfileInfoModel, Error>
     
     init(viewModel:HomeViewModel){
         self.viewModel = viewModel
@@ -25,34 +26,70 @@ class HomeController{
         let collectionref = Fire.shared.getFeedCollectionRef()
         print("Setting newsfeed called", "path is \(collectionref.path)")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            Fire.shared.fetchdata(collectionref) { [weak self] (res) in
-                self?.viewModel.title.value = ""
-                self?.viewModel.isLoading.value = false
-                self?.viewModel.isTableViewHidden.value = false
+            print("Loading")
+        }
+//        OpenProfileManager.shared.temporarilyProfiles.addObserver { (tempProfiles) in
+//            for i in tempProfiles{
+//                Fire.shared.fetchFirstBatchOfProfileInfoModel(from: <#T##String#>, and: <#T##String#>, completionHandler: <#T##(Result<ProfileInfoModel, Error>) -> Void#>)
+//            }
+//        }
+        
+        
+//        OpenProfileManager.shared.temporarilyProfiles.addObserver(fireNow: false) { (tempProfiles) in
+//            for i in tempProfiles.keys{
+//
+//                if let tempProfilesValues = tempProfiles[i]{
+//                    for j in tempProfilesValues{
+//                        OpenProfileManager.shared.getInfoModel(email: i, user: j) { (resultProfile) in
+//                            switch resultProfile{
+//                            case .success(let profile):
+//                                self.viewModel.viewModels.v
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        OpenProfileManager.shared.resetInfoModel()
+        viewModel.viewModels.value = []
+        Fire.shared.fetchdata(collectionref) { [weak self] (res) in
+            self?.viewModel.title.value = ""
+            self?.viewModel.isLoading.value = false
+            self?.viewModel.isTableViewHidden.value = false
+            OpenProfileManager.shared.printProfilesInfoModel()
                 switch res{
                 case .success(let val): self?.buildViewModels(feeds: val)
-                    //print(val)
+                //print(val)
                 case .failure(let err):
                     print(err)
                 }
-            }
-
+//            switch res{
+//            case .success(let val): self?.buildViewModels(feeds: val)
+//            //print(val)
+//            case .failure(let err):
+//                print(err)
+//            }
         }
+
 
     }
     
     
     func buildViewModels(feeds: [Feed]){
-        var vm = [RowViewModel]()
-        //print(feeds)
+        var vm = [WrapperForUserTypes]()
+       // var result:ResultProfileInfoModel!
         for feed in feeds{
-            if let companypost = feed as? CompanyData{
-                let companyVM = CompanyViewModel(email:companypost.email!,name:companypost.name, avatarImage: Observable<UIImage>(value: companypost.coimage ?? UIImage(named: "Enel")!), postImage: Observable<UIImage?>(value: UIImage(named:"profileimage2")), message: Observable<String?>(value: companypost.message), timestamp: Observable<String>(value: companypost.timestamp))
-                    vm.append(companyVM)
+            //group.enter()
+            if let companypost = feed as? FeedData{
+                let infoModel = ProfileInfoModel(name: companypost.user, avatarImage: NSData(data: UIImage(named: "unknown")!.pngData()!))
+                let companyVM = CompanyViewModel(email:companypost.email,name:companypost.user, avatarImage: Observable<UIImage>(value: infoModel.nsDataToIMG()), message: Observable<String?>(value: companypost.message), timestamp: Observable<String>(value: companypost.timestamp))
+                vm.append(WrapperForUserTypes(uuid: UUID(), viewModel: UserTypes.company(companyVM)))
+                //OpenProfileManager.shared.temporarilyProfiles.value.insert("\(companypost.email)/\(companypost.user)")
+               //self.viewModel.viewModels.value.append(WrapperForUserTypes(uuid: UUID(), viewModel: UserTypes.company(companyVM)))
             }
         }
-        print(vm)
         self.viewModel.viewModels.value = vm
+        //OpenProfileManager.shared.
     }
     
     func cellIdentifier(for viewModel: RowViewModel) -> String {

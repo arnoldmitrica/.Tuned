@@ -15,7 +15,7 @@ class ProfileViewController: UIViewController {
     
     // MARK: - Properties
     
-    var data = [CompanyData]()
+    var data = [FeedData]()
     var flagDataIsDownloaded = false
     lazy var segmentedfeedview: UITableView = {
         let segmentedfeedview = UITableView()
@@ -323,14 +323,24 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "custom2", for: indexPath) as! CustomMessageCell
         
-        
-        cell.coimage = data[indexPath.row].coimage
-        cell.message = data[indexPath.row].message
-        cell.admin = data[indexPath.row].admin
-        cell.company = data[indexPath.row].name
-        cell.timestamp = data[indexPath.row].timestamp
-
-
+//        let profile = OpenProfileManager.shared.getInfoModel(email: data[indexPath.row].email, user: data[indexPath.row].user)
+//        cell.coimage = profile.nsDataToIMG()
+//        cell.message = data[indexPath.row].message
+//        cell.admin = data[indexPath.row].admin
+//        cell.company = data[indexPath.row].user
+//        cell.timestamp = data[indexPath.row].timestamp
+//        OpenProfileManager.shared.getInfoModel(email: data[indexPath.row].email, user: data[indexPath.row].user) { [weak self] (resultProfile) in
+//            switch resultProfile{
+//            case .success(let profile):
+//                cell.coimage = profile.nsDataToIMG()
+//                cell.message = self?.data[indexPath.row].message
+//                cell.admin = self?.data[indexPath.row].admin
+//                cell.company = self?.data[indexPath.row].user
+//                cell.timestamp = self?.data[indexPath.row].timestamp
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
         cell.layoutSubviews()
         return cell
     }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseUI
 
 class CompanyViewCell: UITableViewCell, CellConfigurable {
     @IBOutlet var photoOutlet: UIButton!
@@ -16,8 +17,9 @@ class CompanyViewCell: UITableViewCell, CellConfigurable {
     @IBOutlet var textOutlet: UILabel!
     
     static let reuseIdentifier = "CompanyCell"
+    var infoModel: ProfileInfoModel!
     
-    var post:CompanyData!{
+    var post:FeedData!{
         didSet{
             updateUI()
         }
@@ -25,24 +27,17 @@ class CompanyViewCell: UITableViewCell, CellConfigurable {
     
     var viewModel:CompanyViewModel?
     func updateUI(){
-        //photoOutlet.imageView?.image = post.coimage
-        let tintedImage = post.coimage?.withRenderingMode(.alwaysOriginal)
+        let tintedImage = infoModel.nsDataToIMG().withRenderingMode(.alwaysOriginal)
         photoOutlet.setImage(tintedImage, for: .normal)
         photoOutlet.imageView?.contentMode = .scaleAspectFit
-        photoOutlet.layer.cornerRadius = 20
+        photoOutlet.layer.cornerRadius = 24
         photoOutlet.layer.borderWidth = 1.3
         photoOutlet.layer.borderColor = UIColor.systemPurple.cgColor
         photoOutlet.layer.masksToBounds = true
         imageViewOutlet.image = UIImage(named: "profileimage2.jpg")
-        //imageViewOutlet.heightAnchor.constraint(equalToConstant: 140).isActive = true
-       // photoOutlet.imageView?.backgroundColor = .red
-        nameOutlet.text = post.name
-        //nameOutlet.backgroundColor = .yellow
+        nameOutlet.text = infoModel.name
         textOutlet.text = post.message
-        //textOutlet.backgroundColor = .blue
-        //timeOutlet.backgroundColor = .cyan
         timeOutlet.text = post.timestamp
-        //stackView.backgroundColor = .red
     }
     
     func setup(viewModel: RowViewModel) {
@@ -60,8 +55,15 @@ class CompanyViewCell: UITableViewCell, CellConfigurable {
         viewModel.message.addObserver(fireNow: true) { [weak self] (message) in
             self?.textOutlet.text = message
         }
+        //photoOutlet.sd_set
         viewModel.avatarImage.addObserver(fireNow: false) { [weak self] (img) in
-            self?.photoOutlet.setImage(img, for: .normal)
+            let tintedImage = img.withRenderingMode(.alwaysOriginal)
+            self?.photoOutlet.setImage(tintedImage, for: .normal)
+            self?.photoOutlet.imageView?.contentMode = .scaleAspectFit
+            self?.photoOutlet.layer.cornerRadius = 24
+            self?.photoOutlet.layer.borderWidth = 1.3
+            self?.photoOutlet.layer.borderColor = UIColor.systemPurple.cgColor
+            self?.photoOutlet.layer.masksToBounds = true
         }
         viewModel.postImage.addObserver(fireNow: true) { [weak self] (img) in
             self?.imageViewOutlet.image = img
@@ -70,7 +72,26 @@ class CompanyViewCell: UITableViewCell, CellConfigurable {
         viewModel.timestamp.addObserver(fireNow: true) { [weak self] (timestamp) in
             self?.timeOutlet.text = timestamp
         }
- 
+        
+        viewModel.firstBatchState.addObserver { [weak self] (state) in
+            if state == false {
+                let resultProfile = OpenProfileManager.shared.getInfoModelFromCache(email: viewModel.email, user: viewModel.name)
+                switch resultProfile{
+                case .success(let profile):
+                    let tintedImage = profile.nsDataToIMG().withRenderingMode(.alwaysOriginal)
+                    self?.photoOutlet.setImage(tintedImage, for: .normal)
+                    self?.photoOutlet.imageView?.contentMode = .scaleAspectFit
+                    self?.photoOutlet.layer.cornerRadius = 24
+                    self?.photoOutlet.layer.borderWidth = 1.3
+                    self?.photoOutlet.layer.borderColor = UIColor.systemPurple.cgColor
+                    self?.photoOutlet.layer.masksToBounds = true
+
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+        
         setNeedsLayout()
     }
     

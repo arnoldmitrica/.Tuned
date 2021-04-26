@@ -156,31 +156,6 @@ class AddPost: UIViewController, UITextViewDelegate, UICollectionViewDelegate, U
         flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         flowLayout.itemSize = CGSize(width: 300, height: 300)
         
-//        let sixty = textview.frame.origin.y + textview.frame.size.height + 30
-        
-       // photoSliderView = PhotoSliderView(frame: CGRect(x: 0, y: sixty, width: view.frame.size.width, height: 220))
-//        photoSliderView = PhotoSliderView()
-//        self.view.addSubview(photoSliderView)
-//        photoSliderView.translatesAutoresizingMaskIntoConstraints = false
-//        photoSliderView.backgroundColor = .systemRed
-//        photoSliderView.anchor(top: textview.bottomAnchor, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 20, paddingLeft: 5, paddingBottom: 100, paddingRight: 5)
-//        collectionView = UICollectionView(frame: CGRect(x: 0, y: sixty, width: view.frame.size.width, height: 320), collectionViewLayout: flowLayout)
-//        collectionView.backgroundColor = .blue
-//        collectionView.dataSource = self
-//        collectionView.delegate = self
-//        collectionView.backgroundColor = UIColor.clear.withAlphaComponent(0)
-//        collectionView.alwaysBounceHorizontal = true
-//        collectionView.register(ImageCell.self, forCellWithReuseIdentifier: identifier)
-//        view.addSubview(collectionView)
-//
-//        collectionView.translatesAutoresizingMaskIntoConstraints = false
-//        collectionView.topAnchor.constraint(equalTo: textview.bottomAnchor, constant: 20).isActive = true
-//        collectionView.heightAnchor.constraint(equalToConstant: 320).isActive = true
-//        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-//        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-//        collectionView.topAnchor.constraint(equalTo: textview.bottomAnchor, constant: 20).isActive = true
-//
-//        collectionView.heightAnchor.constraint(equalToConstant: 400).isActive = true
     }
              
         func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -223,40 +198,25 @@ extension AddPost: KeyboardToolbarDelegate {
                  
             }, finish: { (assets) in
                  
-                //self.selectedImages = [UIImage(named: "profileimage2.jpg")!,UIImage(named: "profileimage2.jpg")!,UIImage(named: "profileimage2.jpg")!,UIImage(named: "profileimage2.jpg")!]
-                //self.photoSliderView.configure(with: self.selectedImages)
                 let options: PHImageRequestOptions = PHImageRequestOptions()
-                options.deliveryMode = .highQualityFormat
-                //options.isSynchronous = true
+                options.deliveryMode = .fastFormat
                 let group = DispatchGroup()
-                //let semaphore = DispatchSemaphore(value: 0)
                 self.selectedImages = []
                 self.photoSliderView.scrollView.reloadInputViews()
                     for asset in assets {
                         group.enter()
-                        //PHImageManager.de
-                        //DispatchQueue.global().async {
-                            //semaphore.signal()
                             PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options) { (image, info) in
-                                //semaphore.wait()
                                 self.selectedImages.append(image!)
-                                //self.collectionView.reloadData()
-                               // self.photoSliderView.configure(with: self.selectedImages)
-                                
                                 if (self.selectedImages.count != 0){
                                     print("\(self.selectedImages.count) \n")
                                 }
                                 group.leave()
-
                             }
                     }
                 group.notify(queue: DispatchQueue.main) {
                     print("Done")
                     self.photoSliderView.configure(with: self.selectedImages)
-                   // addphotosliderview()
-                    //exit(0)
                 }
-                //self.photoSliderView.configure(with: self.selectedImages)
             })
         }
     }

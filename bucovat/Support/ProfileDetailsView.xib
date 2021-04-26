@@ -11,9 +11,9 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileDetailsView" customModule="bucovat" customModuleProvider="target">
             <connections>
                 <outlet property="containerv" destination="iN0-l3-epB" id="rLB-sY-NP3"/>
-                <outlet property="location" destination="tHD-iL-VS5" id="h61-2u-HMD"/>
-                <outlet property="shop" destination="pVM-e5-c9s" id="zrH-TM-zwo"/>
-                <outlet property="website" destination="YAa-uF-vYh" id="0Cg-Je-bfg"/>
+                <outlet property="isFollowedOutlet" destination="pVM-e5-c9s" id="UaJ-eP-bti"/>
+                <outlet property="messageOutlet" destination="YAa-uF-vYh" id="kOF-P8-yry"/>
+                <outlet property="shopOutlet" destination="tHD-iL-VS5" id="hPH-24-1DT"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -30,7 +30,7 @@
                                 <constraint firstAttribute="height" constant="48" id="cvq-rG-FDH"/>
                             </constraints>
                             <state key="normal" title="Loading">
-                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="titleColor" systemColor="labelColor"/>
                             </state>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tHD-iL-VS5">
@@ -39,7 +39,7 @@
                                 <constraint firstAttribute="height" constant="48" id="p1b-jz-SaL"/>
                             </constraints>
                             <state key="normal" title="Shop">
-                                <color key="titleColor" systemColor="systemBackgroundColor"/>
+                                <color key="titleColor" systemColor="labelColor"/>
                             </state>
                         </button>
                     </subviews>
@@ -53,7 +53,7 @@
                         <constraint firstAttribute="height" constant="48" id="Avn-2B-JJ5"/>
                     </constraints>
                     <state key="normal" title="Message">
-                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="titleColor" systemColor="labelColor"/>
                     </state>
                 </button>
             </subviews>
@@ -72,8 +72,8 @@
         </view>
     </objects>
     <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>
 </document>
